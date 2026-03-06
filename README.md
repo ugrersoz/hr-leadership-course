@@ -1,5 +1,8 @@
 # 📚 Reference Storage — M7 Course Presentation References
 
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-hr--leadership--course.vercel.app-94B43B?style=for-the-badge)](https://hr-leadership-course.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-ugrersoz-181717?style=for-the-badge&logo=github)](https://github.com/ugrersoz/hr-leadership-course)
+
 ![Web App Screenshot](web-app-screnshoot.png)
 
 A minimalist, elegant web application for storing and managing academic presentation references. Built for the **M7: Human Resources Management and Leadership** course at **HTW Berlin**.
