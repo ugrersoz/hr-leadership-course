@@ -1,71 +1,122 @@
-# 📚 Reference Storage — M7 Course Presentation References
+<div align="center">
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-hr--leadership--course.vercel.app-94B43B?style=for-the-badge)](https://hr-leadership-course.vercel.app/)
-[![GitHub](https://img.shields.io/badge/GitHub-ugrersoz-181717?style=for-the-badge&logo=github)](https://github.com/ugrersoz/hr-leadership-course)
+# Reference Storage
 
-![Web App Screenshot](web-app-screnshoot.png)
+**A minimalist reference manager built for the M7 Human Resources Management & Leadership course at HTW Berlin — backing the presentation *"Leading Minds, Not Just Tasks."***
 
-A minimalist, elegant web application for storing and managing academic presentation references. Built for the **M7: Human Resources Management and Leadership** course at **HTW Berlin**.
+[![Live demo](https://img.shields.io/badge/demo-vercel-000?logo=vercel&logoColor=white)](https://hr-leadership-course.vercel.app/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Course](https://img.shields.io/badge/HTW%20Berlin-M7%20HR%20%26%20Leadership-7b3fe4)](#academic-context)
+[![Status](https://img.shields.io/badge/status-prototype-orange)](#project-status)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.x-38bdf8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-Firestore-ffca28?logo=firebase&logoColor=white)](https://firebase.google.com/)
+[![JS](https://img.shields.io/badge/JavaScript-ES%20Modules-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
 
-## 📖 About
+[Live demo](https://hr-leadership-course.vercel.app/) · [Features](#features) · [Architecture](#architecture) · [Run locally](#getting-started) · [Firebase setup](#optional-firebase-setup) · [Roadmap](#roadmap)
 
-This application serves as a dedicated reference management tool for the course presentation titled:
+<img src="web-app-screnshoot.png" alt="Reference Storage screenshot" width="640" />
+
+</div>
+
+---
+
+## Overview
+
+**Reference Storage** is a single-page web app for curating the bibliography behind a course presentation. It was built to accompany:
 
 > **"Leading Minds, Not Just Tasks: Transformational Leadership and Effective Communication in Life Sciences"**
-> *(with reflections from BioNTech's COVID-19 mRNA vaccine case)*
+> *— with reflections from BioNTech's COVID-19 mRNA vaccine case study*
 
-It provides a clean, intuitive interface to add, view, and manage all the academic sources and references used in the presentation, sorted by page number for easy navigation.
+The app provides a clean, distraction-free interface for adding, sorting, and managing academic sources. References are persisted to **Firebase Firestore** when configured, with a transparent **`localStorage` fallback** so the app remains fully functional offline and on cold clones.
 
-## ✨ Features
+## Project status
 
-- **Add References** — Store reference details including title, author, page number, and optional URL
-- **Auto-Sort by Page** — References are automatically sorted by page number for quick lookup
-- **Editable Headers** — Click on course title, university, or presentation title to customize them inline
-- **Delete with Confirmation** — Remove references with a custom confirmation modal (no browser alerts)
-- **Dual Storage System** — Supports Firebase Firestore for cloud persistence with automatic localStorage fallback
-- **Responsive Design** — Fully responsive layout optimized for desktop, tablet, and mobile devices
-- **Modern UI** — Clean, minimalist design with Inter font, smooth hover animations, and custom scrollbar styling
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
+| | |
 |---|---|
-| **HTML5** | Semantic page structure |
-| **Tailwind CSS** (CDN) | Utility-first styling |
-| **Vanilla JavaScript** (ES Modules) | Application logic & DOM manipulation |
-| **Firebase Firestore** | Cloud database (optional) |
-| **localStorage** | Offline/fallback data persistence |
-| **Google Fonts (Inter)** | Typography |
+| **Phase** | Concept / academic deliverable |
+| **Course module** | M7 — HR Management & Leadership, HTW Berlin |
+| **Live URL** | <https://hr-leadership-course.vercel.app/> |
+| **Source size** | Single `index.html` (~553 lines), no build step |
+| **Storage** | Firebase Firestore (optional) → `localStorage` (fallback, always on) |
 
-## 🚀 Getting Started
+## Features
 
-### Quick Start (No Setup Required)
+| | |
+|---|---|
+| ➕ **Add references** | Title, author, page number, optional URL — single-form input on the left panel |
+| ↕️ **Auto-sort by page** | References render sorted by page number so a presenter can jump to a citation by slide position |
+| ✏️ **Inline-editable headers** | Click the course title, university, or presentation title to rename them in place; persisted to `localStorage` |
+| 🗑️ **Delete with confirmation** | Custom confirmation modal instead of `window.confirm()` — keeps the visual aesthetic consistent |
+| ☁️ **Dual storage** | Writes to Firestore when a config is present; transparently falls back to `localStorage` otherwise |
+| 📱 **Responsive** | Mobile / tablet / desktop layout with a 768 px breakpoint |
+| 🎨 **Minimalist UI** | Inter typography, olive-green accent (#94B43B), warm off-white surface, subtle hover transforms |
 
-Simply open `index.html` in any modern web browser:
+## Architecture
+
+```mermaid
+flowchart LR
+    A[User<br/>browser] --> B[Reference Storage<br/>index.html]
+    B -->|ES module import| C{Firebase config<br/>defined?}
+    C -- yes --> D[Firestore<br/>artifacts/&lt;appId&gt;/public/data/references]
+    C -- no --> E[(localStorage<br/>references key)]
+    D -. read on load .-> B
+    E -. read on load .-> B
+```
+
+The page detects two optional globals — `__firebase_config` and `__app_id` — at boot. If either is missing or the Firebase SDK fails to initialise, all reads and writes fall through to `localStorage` without user interaction.
+
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Markup | HTML5, semantic single-page layout |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) via CDN |
+| Behaviour | Vanilla JavaScript, native ES Modules — no bundler, no framework |
+| Cloud storage | [Firebase Firestore](https://firebase.google.com/docs/firestore) + anonymous auth |
+| Offline storage | Browser `localStorage` |
+| Typography | [Google Fonts — Inter](https://fonts.google.com/specimen/Inter) (300–700) |
+| Hosting | [Vercel](https://vercel.com/) static deployment |
+
+## Getting started
+
+### Quick start — no setup required
+
+The app works fully offline through `localStorage`. No server, no build pipeline.
 
 ```bash
-# Clone the repository
-git clone https://github.com/project-sync/hr-leadership.git
-cd hr-leadership
+git clone https://github.com/ugrersoz/hr-leadership-course.git
+cd hr-leadership-course
 
-# Open in browser
+# Open directly
 start index.html        # Windows
-open index.html         # macOS
+open  index.html        # macOS
 xdg-open index.html     # Linux
 ```
 
-> **Note:** The app works fully offline using `localStorage`. No server or build tools required.
+For a proper local web server (recommended so the Firebase SDK and ES modules behave correctly):
 
-### With Firebase (Optional)
+```bash
+# Python 3
+python -m http.server 8080
+# then visit http://localhost:8080
+```
 
-To enable cloud persistence with Firebase:
+```bash
+# Node
+npx serve .
+```
 
-1. Create a [Firebase project](https://console.firebase.google.com/)
-2. Enable **Firestore Database** and **Anonymous Authentication**
-3. Define the Firebase config as a global variable before the app script:
+### Optional: Firebase setup
+
+To enable cross-device persistence:
+
+1. Create a [Firebase project](https://console.firebase.google.com/).
+2. Enable **Firestore Database** and **Anonymous Authentication**.
+3. Inject the config as globals **before** the application script runs:
 
 ```html
 <script>
+  // Add this BEFORE the existing <script type="module"> tag in index.html
   const __firebase_config = JSON.stringify({
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -78,53 +129,90 @@ To enable cloud persistence with Firebase:
 </script>
 ```
 
-If Firebase is not configured or unavailable, the app automatically falls back to `localStorage`.
+> ⚠️ **Do not commit a real Firebase config to a public repository.** For production use, load the values from environment variables at build time, restrict the Firestore Security Rules to authenticated users only, and lock the API key down via Firebase Console → Project Settings → API Restrictions.
 
-## 📁 Project Structure
+If Firebase initialisation fails for any reason, the app silently falls back to `localStorage` — the user-facing experience is identical.
+
+## Data model
+
+References are stored as documents in the Firestore collection `artifacts/<appId>/public/data/references`, with the following shape:
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | Firestore document ID (auto) |
+| `title` | string | Reference title |
+| `author` | string | Author or organisation |
+| `page` | number | Page in the presentation — used for sort order |
+| `url` | string \| null | Optional link to the source |
+| `addedAt` | timestamp | Server timestamp on creation |
+
+The same shape (minus the server timestamp) is mirrored in `localStorage` under the `references` key as a JSON array.
+
+## Project structure
 
 ```
-hr-leadership/
-├── index.html                 # Main application (HTML + CSS + JS)
-├── backend_test.py            # Placeholder test suite (Python/unittest)
-├── web-app-screnshoot.png     # Application screenshot
-├── LICENSE                    # License file
-└── README.md                  # This file
+hr-leadership-course/
+├── index.html              # Single-page app (HTML + Tailwind + ES-module JS)
+├── backend_test.py         # Placeholder unittest scaffold (no backend exists yet)
+├── web-app-screnshoot.png  # README screenshot
+├── README.md
+├── CONTRIBUTING.md
+├── LICENSE                 # MIT
+└── .gitignore
 ```
 
-## 🧪 Testing
+## Testing
 
-The project includes a Python test file for documentation purposes:
+`backend_test.py` is a scaffold — it documents the intended testing approach but contains only a placeholder assertion. Because the application is frontend-only with `localStorage` / Firestore persistence, meaningful end-to-end tests belong in a browser-automation framework:
 
 ```bash
-python backend_test.py
+python backend_test.py   # placeholder; passes trivially
 ```
 
-> **Note:** Since this is a frontend-only application using localStorage/Firebase, the test suite contains placeholder tests. Functional testing is best performed through browser automation tools like Selenium or Playwright.
+Suggested next step: a **Playwright** or **Cypress** smoke suite covering add → sort → delete → reload (verifying `localStorage` round-trips and the Firestore code path when configured).
 
-## 📱 How It Works
+## Roadmap
 
-1. **Adding a Reference** — Fill in the form on the left panel with the reference title, author name, page number, and an optional link. Click "Add Reference" to save.
+- [ ] Replace placeholder `backend_test.py` with a Playwright smoke suite
+- [ ] Add **export** (BibTeX / RIS / CSV) so the bibliography can be reused in Word / LaTeX
+- [ ] Add **bulk import** from a DOI or BibTeX paste
+- [ ] Tighten Firestore Security Rules and document the rule template
+- [ ] Localise UI strings (DE / TR) for broader course reuse
+- [ ] Add an outline / chapter grouping above the flat reference list
 
-2. **Viewing References** — All saved references appear on the right panel, automatically sorted by page number. Each card displays the title, author, date added, and a link button if a URL was provided.
+## Design
 
-3. **Deleting a Reference** — Click the trash icon on any reference card. A custom confirmation modal will appear to prevent accidental deletions.
+| | |
+|---|---|
+| Primary accent | `#94B43B` (olive green) |
+| Surface | `#F8F7F2` (warm off-white) |
+| Typography | Inter (weights 300 – 700) |
+| Cards | White, subtle shadow, rounded corners, hover scale transform |
+| Modals | Custom — no native `confirm()` / `alert()` dialogs |
 
-4. **Editing Headers** — Click on the main title, course name, or university fields to edit them inline. Changes are persisted in localStorage.
+## Academic context
 
-## 🎨 Design
+| | |
+|---|---|
+| **Institution** | [HTW Berlin](https://www.htw-berlin.de/) — University of Applied Sciences |
+| **Module** | M7 — Human Resources Management & Leadership |
+| **Presentation** | *Leading Minds, Not Just Tasks: Transformational Leadership and Effective Communication in Life Sciences* |
+| **Case study** | BioNTech — COVID-19 mRNA vaccine programme |
 
-The application features a warm, academic aesthetic:
+## Contributing
 
-- **Primary Color**: `#94B43B` (olive green)
-- **Background**: `#F8F7F2` (warm off-white)
-- **Font**: Inter (300–700 weights)
-- **Cards**: White with subtle shadows and rounded corners
-- **Animations**: Smooth hover scale transforms on reference cards
+Pull requests for typos, accessibility, performance, and documentation fixes are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow and what's in / out of scope for this academic artefact.
 
-## 👨‍💻 Developer
+## Author
 
-**Uğur Ersöz**
+**Uğur Ersöz** — HTW Berlin · MBA & Engineering in Life Science Management
 
-## 📄 License
+## License
 
-This project is licensed under the terms included in the [LICENSE](LICENSE) file.
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for full text.
+
+---
+
+<div align="center">
+<sub>Built at HTW Berlin · 2025</sub>
+</div>
